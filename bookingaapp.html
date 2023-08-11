@@ -27,6 +27,12 @@
                 localStorage.setItem('email',email)
                 const phno=event.target.phno.value
                 localStorage.setItem('phno',phno)
+                const obj={
+                    name,
+                    email,
+                    phno
+                }
+                localStorage.setItem('userdetails',JSON.stringify(obj))
             }
         </script>
     </body>
