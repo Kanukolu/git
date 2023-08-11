@@ -6,6 +6,7 @@
     <body>
         <h1 > Booking app</h1>
         <form onsubmit="saveTolocalStorage(event)">
+            
            
                 
                 <label for="name">Name:</label>
@@ -18,6 +19,7 @@
                 <button>Submit</button>
             
         </form>
+        <u1 id="listOfitems"></u1>
         <script>
             function saveTolocalStorage(event){
                 event.preventDefault()
@@ -32,7 +34,13 @@
                     email,
                     phno
                 }
-                localStorage.setItem('userdetails',JSON.stringify(obj))
+                localStorage.setItem(obj.email,JSON.stringify(obj))
+                showUserOnScreen(obj)
+                
+            }
+            function showUserOnScreen(obj){
+                    const parentElem=document.getElementById('listOfitems')
+                    parentElem.innerHTML=parentElem.innerHTML +`<li>${obj.name}-${obj.email}-${obj.phno}</li>`
             }
         </script>
     </body>
