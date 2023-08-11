@@ -1,10 +1,14 @@
 
 var form=document.getElementById("addForm")
 var itemlist=document.getElementById("items")
+var filter=documnet.getElementById("filter")
 form.addEventListener('submit',addItem)
 //del event
 itemlist.addEventListener('click',removeItem)
 //add item
+//add filter
+filter.addEventListener('keyup',filteritems)
+
 function addItem(e){
     e.preventDefault()
     //get input value
@@ -32,4 +36,22 @@ function removeItem(e){
             itemlist.removeChild(li)
         }
     }
+}
+//filter
+function filteritems(e){
+    //lowercase
+    var text=e.target.value.toLowerCase()
+    //grab li
+    var items=itemlist.getElementsByTagName('li')
+    //convert array
+    Array.from(items).forEach(function(item)) {;
+        var itemName=item.firstChild.textContent
+        if(itemName.toLowerCase().indexOf(text)!=-1){
+            item.style.display='Block'
+        }   else{
+    };        items.style.display="none"
+        }
+            
+          
+
 }
