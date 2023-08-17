@@ -12,10 +12,10 @@ function saveToLocalStorage(event){
     localStorage.setItem(obj.description,JSON.stringify(obj));
     showUserOnScreen(obj);
 
-    axios.post("https://crudcrud.com/api/42d183f5000b488d9318d34970bf9a7f/appointmentData",obj)
+    axios.post("https://crudcrud.com/api/f5cb935998db4ab3b5ffb0e4d98a2390/appointmentData",obj)
         .then((response)=>{
             showUserOnScreen(response.data);
-            // console.log(response);
+             console.log(response);
         })
         .catch(err=>{
             document.body.innerHTML=err;
@@ -23,23 +23,34 @@ function saveToLocalStorage(event){
 
         })
 
+    
+        axios.Delete("https://crudcrud.com/api/f5cb935998db4ab3b5ffb0e4d98a2390/newddata",obj)
+        .then((response)=>{
+            showUserOnScreen(response.data);
+             console.log(response);
+        })
+        .catch(err=>{
+            document.body.innerHTML=err;
+            console.log(err)
 
+        })
 
     // localStorage.setItem(obj.description,JSON.stringify(obj));
     // showUserOnScreen(obj);
 }
 window.addEventListener("DOMContentLoaded", ()=> {
-	axios.get('https://crudcrud.com/api/f1dda3a70bd94997a12c09a7664f2e51/adduser')
+	axios.get('https://crudcrud.com/api/f5cb935998db4ab3b5ffb0e4d98a2390/newdata')
 		.then( (result) => {
 			for(var i=0; i<result.data.length; i++){
 			showToDisplay(result.data[i]);
-			// console.log(result.data);
+			console.log(result.data);
 			}
 		})
 		.catch( (error) => {
 			console.log(error);
 		})
 })
+
 
 function showUserOnScreen(obj){
     const parentElemen=document.getElementById('listofitems');
