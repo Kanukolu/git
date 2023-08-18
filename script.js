@@ -1,60 +1,74 @@
-let posts =[]
-let lastActivity  ;
-function updateLastUserActivityTime(){
-    return new Promise((resolve , reject)=>{
-        setTimeout(()=>{
-            lastActivity = new Date().toLocaleString()
-            resolve(lastActivity)
-        },1000)
+let myform = document.querySelector('form')
+myform.addEventListener('submit' , handleSubmit)
+
+window.addEventListener('load' , renderElements)
+
+
+
+const axiosInstance = axios.create({
+    baseURL: 'https://crudcrud.com/api/d5662888db2540f98be563e04b615592/store',
+
+  });
+
+
+async function renderElements(e){
+    const res = await axiosInstance.get()
+    console.log(res)
+    res.data.forEach(elem =>{
+        const ul = document.getElementById(elem.category).querySelector('ul')
+        const li = createLi(elem)
+        ul.appendChild(li)
     })
 }
-function createPost(title){
-    // const posts =[]
-    return new Promise((resolve, reject)=>{
-        posts.push({"title" : title})
-        resolve()
-    })
+
+
+async function handleSubmit(e){
+    e.preventDefault();
+    const price = e.target.price.value;
+    const description = e.target.description.value;
+    const category  = e.target.category.value;
+    const data = {price , description , category}
+    console.log(data)
+    const ul = document.getElementById(category).querySelector('ul')
+
+    let res = await axiosInstance.post('',data)
+    if(res.statusText === "Created"){
+
+
+    const li = createLi(res.data)
+    ul.appendChild(li)
+    e.target.price.value =''
+    e.target.description.value =''
+    }
 }
-function deletePost(){
-    return new Promise((resolve,reject)=>{
-        if(posts.length !== 0){
-            posts.pop()
-            resolve()
-        }else{
-            reject(new Error("Array is empty"))
+
+function createLi(data){
+    let li = document.createElement('li')
+    li.textContent = `${data.price} - ${data.category} - ${data.description} `
+
+    const delBtn = document.createElement('button')
+    delBtn.id = data._id
+    delBtn.className ='delete'
+    delBtn.textContent = "Delete"
+
+    li.appendChild(delBtn)
+    return li
+}
+
+let products = document.getElementById('products')
+products.addEventListener('click' , handleClick)
+
+async function handleClick(e){
+    if(e.target.classList.contains('delete')){
+        let ul = e.target.parentNode.parentNode;
+        let li = e.target.parentNode
+        let id = e.target.id
+        console.log(id)
+        let res = await axiosInstance.delete(`/${id}`)
+        console.log(res)
+        if(res.status === 200){
+            ul.removeChild(li)
         }
-    })
+
+    }
 }
-
-Promise.all([createPost("first title") , updateLastUserActivityTime()]).then((data)=>{
-    // posts = [...posts,...data[0]]
-    posts.forEach(elem =>{
-        console.log(elem)
-    })
-    console.log(data[1])
-    return data
-}).
-then((elem)=>{
-    return new Promise((resolve,reject)=>{
-        Promise.all([createPost("second title") , updateLastUserActivityTime()]).then((data)=>{
-            // posts = [...posts,...data[0]]
-            posts.forEach(elem =>{
-                console.log(elem)
-            })
-            console.log(data[1])
-            resolve()
-        })
-    })
-
-})
-.then((data)=>{
-
-
-    return deletePost()
-
-})
-.then(()=>{
-    posts.forEach(elem =>{
-        console.log(elem)
-    })
-})
