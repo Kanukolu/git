@@ -1,23 +1,6 @@
 const http=require('http')
-const server=http.createServer((req,res)=>{
-    console.log(req)
-    console.log("hi")
-})
-server.listen(2000)
-// const http = require('http');
+const routes=require('./routes')
 
-// const server = http.createServer((req, res) => {
-//   res.setHeader('Content-Type', 'text/plain');
-  
-//   if (req.url === '/') {
-//     console.log("Your name");
-//     res.end("Your name");
-//   } else {
-//     res.end("Not found");
-//   }
-// });
+const server=http.createServer(routes)
 
-// const PORT = 3000;
-// server.listen(PORT, () => {
-//   console.log(`Server is running on port ${PORT}`);
-// });
+server.listen(3310)
