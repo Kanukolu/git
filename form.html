@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cricket Player Information</title>
+    <style>
+        
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #333;
+        }
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #333;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        form {
+            margin: 20px auto;
+            width: 80%;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>Cricket Player Information</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Team</th>
+            </tr>
+        </thead>
+        <tbody id="playerTable">
+           
+        </tbody>
+    </table>
+
+    <div id="playerDetails">
+       
+    </div>
+
+    <form id="addPlayerForm">
+        <h2>Add New Player</h2>
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required><br>
+
+        <label for="dob">Date of Birth:</label>
+        <input type="date" id="dob" name="date_of_birth" required><br>
+
+        <label for="photo">Photo URL:</label>
+        <input type="text" id="photo" name="photo_url" required><br>
+
+        <label for="birthplace">Birthplace:</label>
+        <input type="text" id="birthplace" name="birthplace" required><br>
+
+        
+        
+
+        <label for="matches">Matches:</label>
+        <input type="number" id="matches" name="matches"><br>
+
+        <label for="score">Score:</label>
+        <input type="number" id="score" name="score"><br>
+
+        <label for="fifties">Fifties:</label>
+        <input type="number" id="fifties" name="fifties"><br>
+
+        <label for="centuries">Centuries:</label>
+        <input type="number" id="centuries" name="centuries"><br>
+
+        <label for="wickets">Wickets:</label>
+        <input type="number" id="wickets" name="wickets"><br>
+
+        <label for="average">Average:</label>
+        <input type="number" id="average" name="average"><br>
+
+        <button type="submit">Add Player</button>
+    </form>
+
+   
+    <script>
+        
+        async function fetchPlayerData() {
+            try {
+                const response = await fetch('/players'); // Replace with your API endpoint
+                const data = await response.json();
+                const playerTable = document.getElementById('playerTable');
+                const playerDetails = document.getElementById('playerDetails');
+
+                playerTable.innerHTML = '';
+                playerDetails.innerHTML = '';
+
+               
+                data.forEach(player => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${player.name}</td>
+                        <td>${player.team}</td>
+                    `;
+                    playerTable.appendChild(row);
+
+                    const detailsDiv = document.createElement('div');
+                    detailsDiv.innerHTML = `
+                        <h2>${player.name}</h2>
+                        <p><strong>Date of Birth:</strong> ${player.date_of_birth}</p>
+                        <img src="${player.photo_url}" alt="${player.name}" width="200">
+                        <p><strong>Birthplace:</strong> ${player.birthplace}</p>
+                        <p><strong>Career Statistics:</strong></p>
+                        <ul>
+                            <li><strong>Matches:</strong> ${player.matches}</li>
+                            <li><strong>Score:</strong> ${player.score}</li>
+                            <li><strong>Fifties:</strong> ${player.fifties}</li>
+                            <li><strong>Centuries:</strong> ${player.centuries}</li>
+                            <li><strong>Wickets:</strong> ${player.wickets}</li>
+                            <li><strong>Average:</strong> ${player.average}</li>
+                        </ul>
+                    `;
+                    playerDetails.appendChild(detailsDiv);
+                });
+            } catch (error) {
+                console.error('Error fetching player data:', error);
+            }
+        }
+
+       
+        document.getElementById('addPlayerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(e.target);
+            const playerData = {};
+            formData.forEach((value, key) => {
+                playerData[key] = value;
+            });
+
+            try {
+                const response = await fetch('/players', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(playerData),
+                });
+
+                if (response.status === 200) {
+                   
+                    fetchPlayerData();
+                } else {
+                    console.error('Error adding player:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error adding player:', error);
+            }
+        });
+
+        fetchPlayerData();
+    </script>
+</body>
+</html>

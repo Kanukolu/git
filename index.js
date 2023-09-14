@@ -1,80 +1,47 @@
-function saveToLocalStorage(event){
-    event.preventDefault();
-    const price=event.target.name.value;
-    const description=event.target.description.value;
-    const category=event.target.category.value;
-    const obj={
-        price,
-        description,
-        category
-    }
+const express = require('express');
+const app = express();
+const port = 3000;
+const Sequelize=require("sequelize")
+app.use(express.json());
 
-    localStorage.setItem(obj.description,JSON.stringify(obj));
-    showUserOnScreen(obj);
-
-    axios.post("https://crudcrud.com/api/f5cb935998db4ab3b5ffb0e4d98a2390/appointmentData",obj)
-        .then((response)=>{
-            showUserOnScreen(response.data);
-             console.log(response);
-        })
-        .catch(err=>{
-            document.body.innerHTML=err;
-            console.log(err)
-
-        })
-
-    
-        axios.Delete("https://crudcrud.com/api/f5cb935998db4ab3b5ffb0e4d98a2390/newddata",obj)
-        .then((response)=>{
-            showUserOnScreen(response.data);
-             console.log(response);
-        })
-        .catch(err=>{
-            document.body.innerHTML=err;
-            console.log(err)
-
-        })
-
-    // localStorage.setItem(obj.description,JSON.stringify(obj));
-    // showUserOnScreen(obj);
-}
-window.addEventListener("DOMContentLoaded", ()=> {
-	axios.get('https://crudcrud.com/api/f5cb935998db4ab3b5ffb0e4d98a2390/newdata')
-		.then( (result) => {
-			for(var i=0; i<result.data.length; i++){
-			showToDisplay(result.data[i]);
-			console.log(result.data);
-			}
-		})
-		.catch( (error) => {
-			console.log(error);
-		})
+const sequelize=new Sequelize('cricket_careers','root','Lakshmi@2002',{
+    host:'localhost',
+    dialect:'mysql'
 })
 
 
-function showUserOnScreen(obj){
-    const parentElemen=document.getElementById('listofitems');
-    const children=document.createElement('li');
-    children.textContent=obj.price+'- '+obj.description+'- '+obj.category;
-    const deletebtn=document.createElement('input');
-    deletebtn.type='button'
-    deletebtn.value='Deleteexpense'
-    deletebtn.onclick=()=>{
-        localStorage.removeItem(obj.description);
-        parentElemen.removeChild(children)
-    }
-    children.appendChild(deletebtn)
-    const editbtn=document.createElement('input')
-    editbtn.type='button'
-    editbtn.value='Editexpense'
-    editbtn.onclick=()=>{
-        localStorage.removeItem(obj.description)
-        parentElemen.removeChild(children)
-        document.getElementById('price').value=obj.price
-        document.getElementById('description').value=obj.description
-        document.getElementById('category').value=obj.category
-    }
-    children.appendChild(deletebtn)
-    children.appendChild(editbtn)
-    parentElemen.appendChild(children)
-}
+const User=sequelize.define('user',{
+    id:{
+        type:Sequelize.INTEGER,
+        primaryKey:true,
+        autoIncrement:true,
+        allowNull:false
+    },
+    name:Sequelize.STRING,
+    dob:Sequelize.STRING,
+    Birthplace:Sequelize.STRING,
+    photo:Sequelize.STRING,
+    matches:Sequelize.STRING,
+    score:Sequelize.STRING,
+    fifities:Sequelize.STRING,
+    centuries:Sequelize.STRING,
+    wickets:Sequelize.STRING,
+    average:Sequelize.STRING
+})
+
+
+app.get('/players', (req, res) => {
+    const query = 'SELECT * FROM players';
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Error executing MySQL query:', err);
+            res.status(500).json({ error: 'Internal Server Error' });
+            return;
+        }
+        res.json(results);
+    });
+});
+
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+});
